@@ -241,9 +241,7 @@ export function compile(
 
       function toExpr(node: ts.Node | undefined): ts.Expression {
         if (node === undefined) {
-          return newExpr("NullLiteralExpr", [
-            ts.factory.createIdentifier("true"),
-          ]);
+          return newExpr("UndefinedLiteralExpr", []);
         } else if (ts.isArrowFunction(node) || ts.isFunctionExpression(node)) {
           return toFunction("FunctionExpr", node);
         } else if (ts.isExpressionStatement(node)) {
@@ -295,12 +293,10 @@ export function compile(
             ),
           ]);
         } else if (ts.isIdentifier(node)) {
-          if (node.text === "undefined" || node.text === "null") {
-            return newExpr("NullLiteralExpr", [
-              ts.factory.createIdentifier(
-                node.text === "undefined" ? "true" : "false"
-              ),
-            ]);
+          if (node.text === "undefined") {
+            return newExpr("UndefinedLiteralExpr", []);
+          } else if (node.text === "null") {
+            return newExpr("NullLiteralExpr", []);
           }
           const kind = getKind(node);
           if (kind !== undefined) {
@@ -411,11 +407,11 @@ export function compile(
             (ts.isIdentifier(node.name) &&
               (node.name.text === "null" || node.name.text === "undefined"))
               ? string(node.name.text)
-              : ts.isComputedPropertyName(node.name)
-              ? toExpr(node.name.expression)
               : toExpr(node.name),
             toExpr(node.initializer),
           ]);
+        } else if (ts.isComputedPropertyName(node)) {
+          return newExpr("ComputedPropertyNameExpr", [toExpr(node.expression)]);
         } else if (ts.isShorthandPropertyAssignment(node)) {
           return newExpr("PropAssignExpr", [
             newExpr("Identifier", [
@@ -435,9 +431,7 @@ export function compile(
             ),
           ]);
         } else if (node.kind === ts.SyntaxKind.NullKeyword) {
-          return newExpr("NullLiteralExpr", [
-            ts.factory.createIdentifier("false"),
-          ]);
+          return newExpr("NullLiteralExpr", []);
         } else if (ts.isNumericLiteral(node)) {
           return newExpr("NumberLiteralExpr", [node]);
         } else if (

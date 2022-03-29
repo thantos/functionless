@@ -361,8 +361,6 @@ export class VTL {
             const name =
               prop.name.kind === "Identifier"
                 ? `'${prop.name.name}'`
-                : prop.name.kind === "StringLiteralExpr"
-                ? `'${prop.name.value}'`
                 : this.eval(prop.name);
             this.qr(`${obj}.put(${name}, ${this.eval(prop.expr)})`);
           } else if (prop.kind === "SpreadAssignExpr") {
@@ -373,6 +371,8 @@ export class VTL {
         }
         return obj;
       }
+      case "ComputedPropertyNameExpr":
+        return this.eval(node.expr);
       case "ParameterDecl":
       case "PropAssignExpr":
       case "ReferenceExpr":
