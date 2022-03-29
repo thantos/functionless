@@ -350,6 +350,7 @@ export class VTL {
       case "ElementAccessExpr":
         return `${this.eval(node.expr)}[${this.eval(node.element)}]`;
       case "NullLiteralExpr":
+      case "UndefinedLiteralExpr":
         return "$null";
       case "NumberLiteralExpr":
         return node.value.toString(10);

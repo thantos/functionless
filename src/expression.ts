@@ -28,7 +28,8 @@ export type Expr =
   | SpreadAssignExpr
   | SpreadElementExpr
   | TemplateExpr
-  | UnaryExpr;
+  | UnaryExpr
+  | UndefinedLiteralExpr;
 
 export function isExpr(a: any) {
   return (
@@ -50,7 +51,8 @@ export function isExpr(a: any) {
       isReferenceExpr(a) ||
       isStringLiteralExpr(a) ||
       isTemplateExpr(a) ||
-      isUnaryExpr(a))
+      isUnaryExpr(a) ||
+      isUndefinedLiteralExpr(a))
   );
 }
 
@@ -183,6 +185,14 @@ export const isNullLiteralExpr = typeGuard("NullLiteralExpr");
 export class NullLiteralExpr extends BaseNode<"NullLiteralExpr"> {
   constructor() {
     super("NullLiteralExpr");
+  }
+}
+
+export const isUndefinedLiteralExpr = typeGuard("UndefinedLiteralExpr");
+
+export class UndefinedLiteralExpr extends BaseNode<"UndefinedLiteralExpr"> {
+  constructor() {
+    super("UndefinedLiteralExpr");
   }
 }
 
