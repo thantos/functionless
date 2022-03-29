@@ -421,7 +421,7 @@ export class VTL {
         }
       case "Err":
         throw node.error;
-      case "ArgumentExpr":
+      case "Argument":
         return this.eval(node.expr);
     }
 
